@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import ResolutionForm from './ResolutionForm';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
@@ -13,14 +14,27 @@ const deleteUser = (userId, removeUser) => {
     })
 }
 
-const App = ({ loading, resolutions, removeUser }) => {
+const App = ({ loading, resolutions, removeUser, client, user }) => {
     if (loading) return (<div>Loading ... </div>);
     return (
         <div>
-            <RegisterForm />
-            <LoginForm />
+            {
+                user._id ? 
+                <button 
+                    onClick={() => {
+                        Meteor.logout();
+                        client.resetStore();
+                    }}
+                > 
+                    Logout 
+                </button> :
+                    [
+                        <RegisterForm key="register-form" resetStore={client.resetStore} />,
+                        <LoginForm key="login-form" resetStore={client.resetStore} />
+                    ]
+
+            }
             <ResolutionForm  />
-            <button onClick={() => Meteor.logout()}> Logout </button>
             <ul>
                 {
                     resolutions.map(resolution => (
@@ -41,6 +55,9 @@ const resolutionsQuery = gql`
         resolutions {
             _id,
             name
+        }
+        user {
+            _id
         }
     }
 `;
@@ -66,4 +83,4 @@ export default compose(
                 ]
             }
         })
-)(App);
+)(withApollo(App));

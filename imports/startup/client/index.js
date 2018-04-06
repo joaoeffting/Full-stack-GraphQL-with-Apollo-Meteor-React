@@ -27,7 +27,7 @@ const authLink = new ApolloLink((operation, forward) => {
 const cache = new InMemoryCache();
 
 const client = new ApolloClient({
-    link: from([httpLink, authLink]),
+    link: from([authLink, httpLink]),
     cache
 });
 

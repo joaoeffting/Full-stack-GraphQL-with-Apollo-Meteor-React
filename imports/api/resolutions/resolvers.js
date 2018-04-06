@@ -2,21 +2,20 @@ import Resolutions from './resolutions';
 
 export default {
     Query: {
-        resolutions(obj, args, context) {
-            return Resolutions.find({}).fetch()
+        resolutions(obj, args, { userId = null }) {
+            return Resolutions.find({
+                userId  
+            }).fetch()
         }
     },
     Mutation: {
-        createResolution(obj, args, context) {
+        createResolution(obj, args, {userId}) {
+            console.log(userId)
             const resolutionId = Resolutions.insert({
-                name: args.name
+                userId,
+                name: args.name,
             });
             return Resolutions.findOne(resolutionId);
-        },
-        removeUser(obj, args, context) {
-            console.log('jdiosjioajidojioasjiodjoiajoidjoiajoidjioa', args)
-            Resolutions.remove(args.id);
-            return Resolutions.find({}).fetch();
         }
     }
 }

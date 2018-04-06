@@ -1,0 +1,12 @@
+type User {
+    _id: String
+    email: String
+}
+
+extend type Mutation {
+    removeUser(id: String!): [Resolution]
+}
+
+extend type Query {
+    user: User
+}
